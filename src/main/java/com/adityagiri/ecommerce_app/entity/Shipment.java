@@ -15,7 +15,7 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String shippingAddress;
-    private Long contactNumber;
+    private String mobile;
 
     @OneToOne
     @JoinColumn(name = "order_id")
