@@ -7,4 +7,5 @@ import com.adityagiri.ecommerce_app.dto.user.SignupRequestDTO;
 public interface UserService {
     LoginOrSignupResponseDTO signup(SignupRequestDTO signupRequestDTO);
     LoginOrSignupResponseDTO login(LoginRequestDTO loginRequestDTO);
+    String deleteUser(Long id);
 }
