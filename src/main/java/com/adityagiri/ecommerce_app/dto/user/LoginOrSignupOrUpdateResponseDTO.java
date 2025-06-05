@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginOrSignupResponseDTO {
+public class LoginOrSignupOrUpdateResponseDTO {
     private Long id;
-    private String mobile;
     private String username;
+    private String mobile;
     private Role role;
 }
