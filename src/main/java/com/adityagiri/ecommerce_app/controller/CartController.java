@@ -22,8 +22,9 @@ public class CartController {
     }
 
     @PostMapping("/add/{buyerId}")
-    public String addToCart(@PathVariable Long buyerId, @RequestBody AddToCartRequestDTO addToCartRequestDTO) {
-        return cartService.addToCart(addToCartRequestDTO);
+    public ResponseEntity<String> addToCart(@PathVariable Long buyerId, @RequestBody AddToCartRequestDTO addToCartRequestDTO) {
+        cartService.addToCart(buyerId, addToCartRequestDTO);
+        return new ResponseEntity<>("Item added to cart successfully!", HttpStatus.OK);
     }
 
     @GetMapping("/{buyerId}")
@@ -38,7 +39,7 @@ public class CartController {
     }
 
     @DeleteMapping("/delete/{buyerId}/item/{cartItemId}")
-    public ResponseEntity<String> removeCartItem(@PathVariable Long buyerId, @PathVariable Long cartItemId){
+    public ResponseEntity<String> removeCartItem(@PathVariable Long buyerId, @PathVariable Long cartItemId) {
         cartService.removeCartItem(buyerId, cartItemId);
         return new ResponseEntity<>("Cart item removed successfully!", HttpStatus.OK);
     }

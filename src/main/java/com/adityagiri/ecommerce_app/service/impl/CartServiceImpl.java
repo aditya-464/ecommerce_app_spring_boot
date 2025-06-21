@@ -25,10 +25,10 @@ public class CartServiceImpl implements CartService {
     }
 
 
-    public String addToCart(AddToCartRequestDTO addToCartRequestDTO) {
-        User buyer = userRepository.findById(addToCartRequestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("No user found with given user id: " + addToCartRequestDTO.getUserId()));
-        Cart cart = cartRepository.findByBuyerId(addToCartRequestDTO.getUserId())
+    public void addToCart(Long buyerId, AddToCartRequestDTO addToCartRequestDTO) {
+        User buyer = userRepository.findById(buyerId)
+                .orElseThrow(() -> new RuntimeException("No user found with given user id: " + buyerId));
+        Cart cart = cartRepository.findByBuyerId(buyerId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
                     newCart.setBuyer(buyer);
@@ -68,7 +68,6 @@ public class CartServiceImpl implements CartService {
         cart.setTotalItems(totalItems);
 
         Cart savedCart = cartRepository.save(cart);
-        return "Item added to cart!";
     }
 
     public CartResponseDTO getCartDetails(Long buyerId) {
