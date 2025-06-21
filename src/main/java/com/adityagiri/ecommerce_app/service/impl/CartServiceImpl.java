@@ -89,6 +89,33 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteByBuyerId(buyerId);
     }
 
+    public void removeCartItem(Long buyerId, Long cartItemId) {
+        boolean buyer = userRepository.existsById(buyerId);
+        if (!buyer) {
+            throw new RuntimeException("No user found with given id: " + buyerId);
+        }
+
+        Cart cart = cartRepository.findByBuyerId(buyerId)
+                .orElseThrow(() -> new RuntimeException("No cart found for given user: " + buyerId));
+
+        boolean removed = cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
+        if (!removed) {
+            throw new RuntimeException("CartItem not found in user's cart: " + cartItemId);
+        }
+        double totalAmount = cart.getCartItems().stream()
+                .mapToDouble(CartItem::getTotal)
+                .sum();
+
+        int totalItems = cart.getCartItems().stream()
+                .mapToInt(item -> item.getQuantity().intValue())
+                .sum();
+
+        cart.setAmount(totalAmount);
+        cart.setTotalItems(totalItems);
+
+        cartRepository.save(cart);
+    }
+
     private CartResponseDTO convertToCartResponseDTO(Cart cart) {
         List<CartItemResponseDTO> cartItemsFinalList = new ArrayList<>();
         for (CartItem c : cart.getCartItems()) {

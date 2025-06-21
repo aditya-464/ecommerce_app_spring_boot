@@ -16,23 +16,30 @@ import java.util.Optional;
 public class CartController {
 
     private final CartService cartService;
-    public CartController(CartService cartService){
+
+    public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 
-    @PostMapping("/add")
-    public String addToCart(@RequestBody AddToCartRequestDTO addToCartRequestDTO){
+    @PostMapping("/add/{buyerId}")
+    public String addToCart(@PathVariable Long buyerId, @RequestBody AddToCartRequestDTO addToCartRequestDTO) {
         return cartService.addToCart(addToCartRequestDTO);
     }
 
     @GetMapping("/{buyerId}")
-    public CartResponseDTO getCartDetails(@PathVariable Long buyerId){
+    public CartResponseDTO getCartDetails(@PathVariable Long buyerId) {
         return cartService.getCartDetails(buyerId);
     }
 
-    @DeleteMapping("/{buyerId}")
-    public ResponseEntity<String> deleteCart(@PathVariable Long buyerId){
+    @DeleteMapping("/delete/{buyerId}")
+    public ResponseEntity<String> deleteCart(@PathVariable Long buyerId) {
         cartService.deleteCart(buyerId);
         return new ResponseEntity<>("Cart cleared successfully!", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{buyerId}/item/{cartItemId}")
+    public ResponseEntity<String> removeCartItem(@PathVariable Long buyerId, @PathVariable Long cartItemId){
+        cartService.removeCartItem(buyerId, cartItemId);
+        return new ResponseEntity<>("Cart item removed successfully!", HttpStatus.OK);
     }
 }
