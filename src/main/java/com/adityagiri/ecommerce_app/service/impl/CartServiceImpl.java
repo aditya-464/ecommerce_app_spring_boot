@@ -1,12 +1,18 @@
 package com.adityagiri.ecommerce_app.service.impl;
 
 import com.adityagiri.ecommerce_app.dto.cart.AddToCartRequestDTO;
+import com.adityagiri.ecommerce_app.dto.cart.CartItemResponseDTO;
+import com.adityagiri.ecommerce_app.dto.cart.CartResponseDTO;
 import com.adityagiri.ecommerce_app.entity.Cart;
 import com.adityagiri.ecommerce_app.entity.CartItem;
 import com.adityagiri.ecommerce_app.entity.User;
 import com.adityagiri.ecommerce_app.repository.CartRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.CartService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
 
@@ -39,8 +45,7 @@ public class CartServiceImpl implements CartService {
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + addToCartRequestDTO.getQuantity());
             existingItem.setTotal(existingItem.getQuantity() * existingItem.getPrice());
-        }
-        else{
+        } else {
             CartItem newItem = new CartItem();
             newItem.setProductId(addToCartRequestDTO.getProductId());
             newItem.setQuantity(addToCartRequestDTO.getQuantity());
@@ -64,5 +69,35 @@ public class CartServiceImpl implements CartService {
 
         Cart savedCart = cartRepository.save(cart);
         return "Item added to cart!";
+    }
+
+    public CartResponseDTO getCartDetails(Long id) {
+        User buyer = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No user found with given id: " + id));
+
+        Cart cart = cartRepository.findByBuyerId(id)
+                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + id));
+
+        return convertToCartResponseDTO(cart);
+    }
+
+    private CartResponseDTO convertToCartResponseDTO(Cart cart) {
+        List<CartItemResponseDTO> cartItemsFinalList = new ArrayList<>();
+        for (CartItem c : cart.getCartItems()) {
+            cartItemsFinalList.add(new CartItemResponseDTO(
+                    c.getId(),
+                    c.getProductId(),
+                    c.getQuantity(),
+                    c.getPrice(),
+                    c.getTotal()
+            ));
+        }
+
+        return new CartResponseDTO(
+                cart.getId(),
+                cart.getAmount(),
+                cart.getTotalItems(),
+                cartItemsFinalList
+        );
     }
 }
