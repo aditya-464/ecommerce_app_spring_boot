@@ -71,14 +71,22 @@ public class CartServiceImpl implements CartService {
         return "Item added to cart!";
     }
 
-    public CartResponseDTO getCartDetails(Long id) {
-        User buyer = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No user found with given id: " + id));
+    public CartResponseDTO getCartDetails(Long buyerId) {
+        User buyer = userRepository.findById(buyerId)
+                .orElseThrow(() -> new RuntimeException("No user found with given id: " + buyerId));
 
-        Cart cart = cartRepository.findByBuyerId(id)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + id));
+        Cart cart = cartRepository.findByBuyerId(buyerId)
+                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + buyerId));
 
         return convertToCartResponseDTO(cart);
+    }
+
+    public void deleteCart(Long buyerId) {
+        boolean cartExists = cartRepository.existsByBuyerId(buyerId);
+        if (!cartExists) {
+            throw new RuntimeException("Cart not found for user: " + buyerId);
+        }
+        cartRepository.deleteByBuyerId(buyerId);
     }
 
     private CartResponseDTO convertToCartResponseDTO(Cart cart) {

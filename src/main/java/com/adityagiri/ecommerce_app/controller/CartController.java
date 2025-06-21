@@ -4,6 +4,8 @@ import com.adityagiri.ecommerce_app.dto.cart.AddToCartRequestDTO;
 import com.adityagiri.ecommerce_app.dto.cart.CartResponseDTO;
 import com.adityagiri.ecommerce_app.entity.Cart;
 import com.adityagiri.ecommerce_app.service.CartService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +25,14 @@ public class CartController {
         return cartService.addToCart(addToCartRequestDTO);
     }
 
-    @GetMapping("/{id}")
-    public CartResponseDTO getCartDetails(@PathVariable Long id){
-        return cartService.getCartDetails(id);
+    @GetMapping("/{buyerId}")
+    public CartResponseDTO getCartDetails(@PathVariable Long buyerId){
+        return cartService.getCartDetails(buyerId);
+    }
+
+    @DeleteMapping("/{buyerId}")
+    public ResponseEntity<String> deleteCart(@PathVariable Long buyerId){
+        cartService.deleteCart(buyerId);
+        return new ResponseEntity<>("Cart cleared successfully!", HttpStatus.OK);
     }
 }

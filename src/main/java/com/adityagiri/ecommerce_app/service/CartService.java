@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 public interface CartService {
     String addToCart(AddToCartRequestDTO addToCartRequestDTO);
     CartResponseDTO getCartDetails(Long id);
-//    String clearCart(Long id);
+    void deleteCart(Long id);
 //    String removeCartItem(Long id, Long cartItemId);
 }
