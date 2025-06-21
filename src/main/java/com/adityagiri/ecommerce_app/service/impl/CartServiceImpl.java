@@ -63,7 +63,6 @@ public class CartServiceImpl implements CartService {
         cart.setTotalItems(totalItems);
 
         Cart savedCart = cartRepository.save(cart);
-
         return "Item added to cart!";
     }
 }
