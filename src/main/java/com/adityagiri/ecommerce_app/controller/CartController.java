@@ -23,7 +23,7 @@ public class CartController {
         return new ResponseEntity<>("Item added to cart successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/{buyerId}")
+    @GetMapping("/get/{buyerId}")
     public CartResponseDTO getCartDetails(@PathVariable Long buyerId) {
         return cartService.getCartDetails(buyerId);
     }

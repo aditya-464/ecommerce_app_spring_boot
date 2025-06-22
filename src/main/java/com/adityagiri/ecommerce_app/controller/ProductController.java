@@ -35,4 +35,10 @@ public class ProductController {
     public List<ProductResponseDTO> getAllProducts(){
         return productService.getAllProducts();
     }
+
+//    GET /search?name=iphone
+    @GetMapping("/search")
+    public List<ProductResponseDTO> searchProductsByName(@RequestParam String name){
+        return productService.searchProductsByName(name);
+    }
 }
