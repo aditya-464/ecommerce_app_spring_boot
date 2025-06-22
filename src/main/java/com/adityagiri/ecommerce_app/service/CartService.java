@@ -10,4 +10,5 @@ public interface CartService {
     CartResponseDTO getCartDetails(Long buyerId);
     void deleteCart(Long buyerId);
     void removeCartItem(Long buyerId, Long cartItemId);
+    void updateCartItem(Long buyerId, Long cartItemId, String operation);
 }

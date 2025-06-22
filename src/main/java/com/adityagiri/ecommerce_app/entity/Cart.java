@@ -19,6 +19,9 @@ public class Cart {
     private Double amount;
     private Integer totalItems;
 
+    @Version
+    private Long version;
+
     @OneToOne
     @JoinColumn(name = "buyer_id")
     private User buyer;

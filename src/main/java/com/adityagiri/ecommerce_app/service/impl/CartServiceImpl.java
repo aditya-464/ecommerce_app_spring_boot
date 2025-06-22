@@ -9,10 +9,11 @@ import com.adityagiri.ecommerce_app.entity.User;
 import com.adityagiri.ecommerce_app.repository.CartRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.CartService;
+import jakarta.persistence.OptimisticLockException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
 
@@ -25,6 +26,7 @@ public class CartServiceImpl implements CartService {
     }
 
 
+    @Transactional
     public void addToCart(Long buyerId, AddToCartRequestDTO addToCartRequestDTO) {
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new RuntimeException("No user found with given user id: " + buyerId));
@@ -70,6 +72,7 @@ public class CartServiceImpl implements CartService {
         Cart savedCart = cartRepository.save(cart);
     }
 
+    @Transactional
     public CartResponseDTO getCartDetails(Long buyerId) {
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new RuntimeException("No user found with given id: " + buyerId));
@@ -80,6 +83,7 @@ public class CartServiceImpl implements CartService {
         return convertToCartResponseDTO(cart);
     }
 
+    @Transactional
     public void deleteCart(Long buyerId) {
         boolean cartExists = cartRepository.existsByBuyerId(buyerId);
         if (!cartExists) {
@@ -88,6 +92,7 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteByBuyerId(buyerId);
     }
 
+    @Transactional
     public void removeCartItem(Long buyerId, Long cartItemId) {
         boolean buyer = userRepository.existsById(buyerId);
         if (!buyer) {
@@ -113,6 +118,53 @@ public class CartServiceImpl implements CartService {
         cart.setTotalItems(totalItems);
 
         cartRepository.save(cart);
+    }
+
+    @Transactional
+    public void updateCartItem(Long buyerId, Long cartItemId, String operation) {
+        boolean userExists = userRepository.existsById(buyerId);
+        if (!userExists) {
+            throw new RuntimeException("No user found with given id: " + buyerId);
+        }
+
+        try {
+            Cart cart = cartRepository.findByBuyerId(buyerId)
+                    .orElseThrow(() -> new RuntimeException("Cart not found with given user id: " + buyerId));
+
+            CartItem cartItem = cart.getCartItems().stream()
+                    .filter(item -> item.getId().equals(cartItemId))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+            Long newQuantity = cartItem.getQuantity();
+            if(operation.equals("increment")){
+                newQuantity += 1;
+            }
+            else{
+                if(cartItem.getQuantity()<=1){
+                    throw new RuntimeException("Item quantity cannot be less than 1");
+                }
+                newQuantity -= 1;
+            }
+
+            cartItem.setQuantity(newQuantity);
+            cartItem.setTotal(cartItem.getPrice() * newQuantity);
+
+            double newAmount = cart.getCartItems().stream()
+                    .mapToDouble(CartItem::getTotal)
+                    .sum();
+
+            int totalItems = cart.getCartItems().stream()
+                    .mapToInt(item -> item.getQuantity().intValue())
+                    .sum();
+
+            cart.setAmount(newAmount);
+            cart.setTotalItems(totalItems);
+
+            cartRepository.save(cart);
+        } catch (OptimisticLockException e) {
+            throw new RuntimeException("Cart was updated by another request. Please reload and try again");
+        }
     }
 
     private CartResponseDTO convertToCartResponseDTO(Cart cart) {
