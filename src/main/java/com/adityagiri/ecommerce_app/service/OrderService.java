@@ -6,11 +6,9 @@ import com.adityagiri.ecommerce_app.dto.order.OrderResponseDTO;
 import com.adityagiri.ecommerce_app.entity.Payment;
 import com.adityagiri.ecommerce_app.entity.Shipment;
 import com.adityagiri.ecommerce_app.enums.OrderStatus;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface OrderService {
     CreateOrUpdateOrCancelOrderResponseDTO createOrder(Long buyerId, String shippingAddress, String contactNumber);
     CreateOrUpdateOrCancelOrderResponseDTO updateOrderStatus(String refNumber, OrderStatus orderStatus);

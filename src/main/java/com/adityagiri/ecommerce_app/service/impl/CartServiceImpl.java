@@ -10,11 +10,13 @@ import com.adityagiri.ecommerce_app.repository.CartRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.CartService;
 import jakarta.persistence.OptimisticLockException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;

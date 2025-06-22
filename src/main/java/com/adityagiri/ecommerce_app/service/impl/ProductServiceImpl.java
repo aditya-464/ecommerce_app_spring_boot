@@ -7,10 +7,12 @@ import com.adityagiri.ecommerce_app.entity.User;
 import com.adityagiri.ecommerce_app.repository.ProductRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.ProductService;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;

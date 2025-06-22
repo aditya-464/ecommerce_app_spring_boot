@@ -12,11 +12,13 @@ import com.adityagiri.ecommerce_app.repository.ShipmentRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.OrderService;
 import com.adityagiri.ecommerce_app.service.ShipmentService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ShipmentServiceImpl implements ShipmentService {
 
     private final ShipmentRepository shipmentRepository;
