@@ -10,7 +10,7 @@ import com.adityagiri.ecommerce_app.enums.ShipmentStatus;
 import com.adityagiri.ecommerce_app.repository.OrderRepository;
 import com.adityagiri.ecommerce_app.repository.ShipmentRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
-import com.adityagiri.ecommerce_app.service.OrderService;
+import com.adityagiri.ecommerce_app.service.OrderShipmentCoordinatorService;
 import com.adityagiri.ecommerce_app.service.ShipmentService;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +24,13 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final ShipmentRepository shipmentRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final OrderService orderService;
+    private final OrderShipmentCoordinatorService orderShipmentCoordinatorService;
 
-    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, OrderRepository orderRepository, UserRepository userRepository, OrderService orderService) {
+    public ShipmentServiceImpl(ShipmentRepository shipmentRepository, OrderRepository orderRepository, UserRepository userRepository, OrderShipmentCoordinatorService orderShipmentCoordinatorService) {
         this.shipmentRepository = shipmentRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
-        this.orderService = orderService;
+        this.orderShipmentCoordinatorService = orderShipmentCoordinatorService;
     }
 
     public CreateOrUpdateShipmentResponseDTO createShipment(String orderRefNumber) {
@@ -52,8 +52,8 @@ public class ShipmentServiceImpl implements ShipmentService {
 
         Shipment savedShipment = shipmentRepository.save(shipment);
 
-        orderService.updateOrderStatus(order.getRefNumber(), OrderStatus.SHIPPED);
-        orderService.updateShipmentObject(order.getRefNumber(), savedShipment);
+        orderShipmentCoordinatorService.updateOrderStatus(order.getRefNumber(), OrderStatus.SHIPPED);
+        orderShipmentCoordinatorService.updateShipmentObject(order.getRefNumber(), savedShipment);
 
         return new CreateOrUpdateShipmentResponseDTO("Shipment created successfully!", savedShipment.getTrackingNumber());
     }
