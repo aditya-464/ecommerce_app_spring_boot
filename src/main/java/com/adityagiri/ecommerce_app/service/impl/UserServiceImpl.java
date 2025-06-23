@@ -8,6 +8,7 @@ import com.adityagiri.ecommerce_app.entity.User;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
         return usersList;
     }
 
+    @Transactional
     public LoginOrSignupOrUpdateResponseDTO signup(SignupRequestDTO signupRequestDTO) {
         if(signupRequestDTO.getMobile()==null || signupRequestDTO.getUsername()==null || signupRequestDTO.getPassword()==null || signupRequestDTO.getRole()==null){
             throw new RuntimeException("All fields are mandatory!");
@@ -65,6 +67,7 @@ public class UserServiceImpl implements UserService {
         return responseDTO;
     }
 
+    @Transactional
     public LoginOrSignupOrUpdateResponseDTO login(LoginRequestDTO loginRequestDTO) {
         User user = userRepository.findByUsername(loginRequestDTO.getUsername());
 
@@ -83,6 +86,7 @@ public class UserServiceImpl implements UserService {
         return responseDTO;
     }
 
+    @Transactional
     public String deleteUser(Long id){
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
@@ -94,6 +98,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     public LoginOrSignupOrUpdateResponseDTO updateUser(Long id, UpdateRequestDTO updateRequestDTO){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found!"));

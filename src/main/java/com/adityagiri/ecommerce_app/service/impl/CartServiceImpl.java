@@ -74,7 +74,6 @@ public class CartServiceImpl implements CartService {
         Cart savedCart = cartRepository.save(cart);
     }
 
-    @Transactional
     public CartResponseDTO getCartDetails(Long buyerId) {
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new RuntimeException("No user found with given id: " + buyerId));

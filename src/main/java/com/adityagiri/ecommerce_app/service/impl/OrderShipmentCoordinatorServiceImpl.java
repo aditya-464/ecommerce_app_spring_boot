@@ -7,6 +7,7 @@ import com.adityagiri.ecommerce_app.enums.OrderStatus;
 import com.adityagiri.ecommerce_app.repository.OrderRepository;
 import com.adityagiri.ecommerce_app.service.OrderShipmentCoordinatorService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderShipmentCoordinatorServiceImpl implements OrderShipmentCoordinatorService {
@@ -16,6 +17,7 @@ public class OrderShipmentCoordinatorServiceImpl implements OrderShipmentCoordin
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO updateOrderStatus(String refNumber, OrderStatus orderStatus) {
         Order order = orderRepository.findByRefNumber(refNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given ref number: " + refNumber));
@@ -27,6 +29,7 @@ public class OrderShipmentCoordinatorServiceImpl implements OrderShipmentCoordin
         return new CreateOrUpdateOrCancelOrderResponseDTO("Order status updated successfully!", refNumber);
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO updateShipmentObject(String refNumber, Shipment shipment) {
         Order order = orderRepository.findByRefNumber(refNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given ref number: " + refNumber));

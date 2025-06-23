@@ -12,6 +12,7 @@ import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.OrderService;
 import com.adityagiri.ecommerce_app.service.ShipmentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
         this.shipmentService = shipmentService;
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO createOrder(Long buyerId, String shippingAddress, String contactNumber) {
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new RuntimeException("No user found with given id: " + buyerId));
@@ -53,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
         return new CreateOrUpdateOrCancelOrderResponseDTO("Order created successfully!", savedOrder.getRefNumber());
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO updateOrderStatus(String refNumber, OrderStatus orderStatus) {
         Order order = orderRepository.findByRefNumber(refNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given ref number: " + refNumber));
@@ -64,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
         return new CreateOrUpdateOrCancelOrderResponseDTO("Order status updated successfully!", refNumber);
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO updatePaymentObject(String refNumber, Payment payment) {
         Order order = orderRepository.findByRefNumber(refNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given ref number: " + refNumber));
@@ -75,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
         return new CreateOrUpdateOrCancelOrderResponseDTO("Payment details updated in order successfully!", refNumber);
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO updateShipmentObject(String refNumber, Shipment shipment) {
         Order order = orderRepository.findByRefNumber(refNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given ref number: " + refNumber));
@@ -85,6 +90,7 @@ public class OrderServiceImpl implements OrderService {
         return new CreateOrUpdateOrCancelOrderResponseDTO("Shipment details updated in order successfully!", refNumber);
     }
 
+    @Transactional
     public CreateOrUpdateOrCancelOrderResponseDTO cancelOrder(String refNumber) {
         Order order = orderRepository.findByRefNumber(refNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given ref number: " + refNumber));

@@ -8,6 +8,7 @@ import com.adityagiri.ecommerce_app.repository.ProductRepository;
 import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class ProductServiceImpl implements ProductService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public ProductResponseDTO createProduct(ProductCreateRequestDTO productCreateRequestDTO){
         if(productCreateRequestDTO.getName()==null || productCreateRequestDTO.getDescription()==null || productCreateRequestDTO.getPrice()==null || productCreateRequestDTO.getStocks()==null || productCreateRequestDTO.getAvailable()==null || productCreateRequestDTO.getSellerId()==null){
             throw new RuntimeException("All fields are mandatory!");

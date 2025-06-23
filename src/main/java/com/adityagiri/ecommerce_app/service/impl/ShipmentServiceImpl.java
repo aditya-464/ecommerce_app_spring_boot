@@ -13,6 +13,7 @@ import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.OrderShipmentCoordinatorService;
 import com.adityagiri.ecommerce_app.service.ShipmentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         this.orderShipmentCoordinatorService = orderShipmentCoordinatorService;
     }
 
+    @Transactional
     public CreateOrUpdateShipmentResponseDTO createShipment(String orderRefNumber) {
         Order order = orderRepository.findByRefNumber(orderRefNumber)
                 .orElseThrow(() -> new RuntimeException("No order found with given id: " + orderRefNumber));
@@ -58,6 +60,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         return new CreateOrUpdateShipmentResponseDTO("Shipment created successfully!", savedShipment.getTrackingNumber());
     }
 
+    @Transactional
     public CreateOrUpdateShipmentResponseDTO updateShipmentStatus(String trackingNumber, ShipmentStatus shipmentStatus){
         Shipment shipment = shipmentRepository.findByTrackingNumber(trackingNumber)
                 .orElseThrow(()->new RuntimeException("No shipment found for given tracking number: " + trackingNumber));

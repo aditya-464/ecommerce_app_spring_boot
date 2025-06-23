@@ -13,6 +13,7 @@ import com.adityagiri.ecommerce_app.repository.UserRepository;
 import com.adityagiri.ecommerce_app.service.OrderService;
 import com.adityagiri.ecommerce_app.service.PaymentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
         this.orderService = orderService;
     }
 
+    @Transactional
     public CreatePaymentResponseDTO makePayment(Long buyerId, String refNumber, CreatePaymentRequestDTO createPaymentRequestDTO) {
         boolean userExists = userRepository.existsById(buyerId);
         if (!userExists) {
