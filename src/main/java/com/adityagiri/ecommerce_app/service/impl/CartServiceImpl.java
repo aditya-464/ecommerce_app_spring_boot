@@ -86,10 +86,16 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     public void deleteCart(Long buyerId) {
+        User buyer = userRepository.findById(buyerId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         boolean cartExists = cartRepository.existsByBuyerId(buyerId);
         if (!cartExists) {
             throw new RuntimeException("Cart not found for user: " + buyerId);
         }
+        buyer.setCart(null); // This is critical
+        userRepository.save(buyer); // Persist this change
+
         cartRepository.deleteByBuyerId(buyerId);
     }
 
