@@ -98,7 +98,9 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.CANCELED);
         orderRepository.save(order);
 
-        shipmentService.updateShipmentStatus(order.getShipment().getTrackingNumber(), ShipmentStatus.CANCELED);
+        if (order.getShipment() != null) {
+            shipmentService.updateShipmentStatus(order.getShipment().getTrackingNumber(), ShipmentStatus.CANCELED);
+        }
 
         return new CreateOrUpdateOrCancelOrderResponseDTO("Order canceled!", refNumber);
     }
@@ -134,8 +136,14 @@ public class OrderServiceImpl implements OrderService {
         o.setContactNumber(order.getContactNumber());
         o.setOrderStatus(order.getOrderStatus());
         o.setBuyerId(order.getBuyer().getId());
-        o.setShipmentTrackingNumber(order.getShipment().getTrackingNumber());
-        o.setPaymentRefNumber(order.getPayment().getRefNumber());
+        // ✅ Null-safe setters because initially the shipment and payment object does not exist and are set to null
+        o.setShipmentTrackingNumber(
+                order.getShipment() != null ? order.getShipment().getTrackingNumber() : null
+        );
+        o.setPaymentRefNumber(
+                order.getPayment() != null ? order.getPayment().getRefNumber() : null
+        );
+
 
         List<OrderItemResponseDTO> finalOrderItemsList = new ArrayList<>();
 
