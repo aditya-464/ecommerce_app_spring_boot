@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: bitnami/mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_DATABASE: spring_ecommerce
+      MYSQL_ROOT_PASSWORD: Root@012
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/bitnami/mysql
+    networks:
+      - spring-mysql-ecommerce
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pRoot@012" ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  springboot-app:
+    build: .
+    image: spring-ecommerce-app:v1
+    container_name: springboot-app-container
+    ports:
+      - "8080:8080"
+    environment:
+      MYSQL_DATABASE_NAME: spring_ecommerce
+      MYSQL_DATABASE_HOST: mysql-container
+      MYSQL_DATABASE_PORT: 3306
+      MYSQL_DATASOURCE_USERNAME: root
+      MYSQL_DATASOURCE_PASSWORD: Root@012
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - spring-mysql-ecommerce
+
+volumes:
+  mysql-data:
+
+networks:
+  spring-mysql-ecommerce:
+    driver: bridge
