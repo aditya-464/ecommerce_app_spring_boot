@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: spring-mysql-ecommerce-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: bitnami/mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: spring_ecommerce
+            - name: MYSQL_ROOT_PASSWORD
+              value: Root@012
+          volumeMounts:
+            - mountPath: /bitnami/mysql
+              name: mysql-volume
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - "-h"
+                - "localhost"
+                - "-uroot"
+                - "-pRoot@012"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: mysql-volume
+          persistentVolumeClaim:
+            claimName: mysql-pvc

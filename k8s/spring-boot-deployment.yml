@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-app
+  namespace: spring-mysql-ecommerce-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-app
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+    spec:
+      containers:
+        - name: springboot-container
+          image: adityagiri1/spring-ecommerce-app:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MYSQL_DATABASE_NAME
+              value: spring_ecommerce
+            - name: MYSQL_DATABASE_HOST
+              value: mysql
+            - name: MYSQL_DATABASE_PORT
+              value: "3306"
+            - name: MYSQL_DATASOURCE_USERNAME
+              value: root
+            - name: MYSQL_DATASOURCE_PASSWORD
+              value: Root@012
+
